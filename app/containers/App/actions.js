@@ -15,7 +15,7 @@
  *    }
  */
 
-import { LOAD_REPOS, LOAD_REPOS_SUCCESS, LOAD_REPOS_ERROR } from './constants';
+import { LOAD_REPOS, LOAD_REPOS_SUCCESS, LOAD_REPOS_ERROR, GET_USERS, GET_USERS_SUCCESS, GET_USERS_FAILURE } from './constants';
 
 /**
  * Load the repositories, this action starts the request saga
@@ -54,6 +54,26 @@ export function reposLoaded(repos, username) {
 export function repoLoadingError(error) {
   return {
     type: LOAD_REPOS_ERROR,
+    error,
+  };
+}
+
+export function getUsers() {
+  return {
+    type: GET_USERS,
+  };
+}
+
+export function getUsersSuccess(users) {
+  return {
+    type: GET_USERS_SUCCESS,
+    users,
+  };
+}
+
+export function getUsersFailure(error) {
+  return {
+    type: GET_USERS_FAILURE,
     error,
   };
 }

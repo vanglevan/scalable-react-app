@@ -11,6 +11,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import styled from 'styled-components';
 
 import { useInjectReducer } from 'utils/injectReducer';
 import { useInjectSaga } from 'utils/injectSaga';
@@ -18,22 +19,36 @@ import {
   makeSelectRepos,
   makeSelectLoading,
   makeSelectError,
+  makeSelectUsersArray,
+  makeSelectUsersLoading,
+  makeSelectUsersError,
 } from 'containers/App/selectors';
 import H2 from 'components/H2';
 import ReposList from 'components/ReposList';
+import UserList from '../../components/UserList';
 import AtPrefix from './AtPrefix';
 import CenteredSection from './CenteredSection';
 import Form from './Form';
 import Input from './Input';
 import Section from './Section';
 import messages from './messages';
-import { loadRepos } from '../App/actions';
+import { loadRepos, getUsers } from '../App/actions';
 import { changeUsername } from './actions';
 import { makeSelectUsername } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 
 const key = 'home';
+
+const HomeWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  padding: 0 50px;
+`;
+
+const UserListWrapper = styled.div`
+  width: 100%;
+`;
 
 export function HomePage({
   username,
@@ -42,19 +57,33 @@ export function HomePage({
   repos,
   onSubmitForm,
   onChangeUsername,
+  handleFetchUsers,
+  users,
+  usersLoading,
+  usersError,
 }) {
   useInjectReducer({ key, reducer });
   useInjectSaga({ key, saga });
 
   useEffect(() => {
     // When initial state username is not null, submit the form to load repos
-    if (username && username.trim().length > 0) onSubmitForm();
+    if (username && username.trim().length > 0) {
+      onSubmitForm();
+    }
+
+    handleFetchUsers();
   }, []);
 
   const reposListProps = {
     loading,
     error,
     repos,
+  };
+
+  const usersListProps = {
+    users,
+    loading: usersLoading,
+    error: usersError,
   };
 
   return (
@@ -66,37 +95,11 @@ export function HomePage({
           content="A React.js Boilerplate application homepage"
         />
       </Helmet>
-      <div>
-        <CenteredSection>
-          <H2>
-            <FormattedMessage {...messages.startProjectHeader} />
-          </H2>
-          <p>
-            <FormattedMessage {...messages.startProjectMessage} />
-          </p>
-        </CenteredSection>
-        <Section>
-          <H2>
-            <FormattedMessage {...messages.trymeHeader} />
-          </H2>
-          <Form onSubmit={onSubmitForm}>
-            <label htmlFor="username">
-              <FormattedMessage {...messages.trymeMessage} />
-              <AtPrefix>
-                <FormattedMessage {...messages.trymeAtPrefix} />
-              </AtPrefix>
-              <Input
-                id="username"
-                type="text"
-                placeholder="mxstbr"
-                value={username}
-                onChange={onChangeUsername}
-              />
-            </label>
-          </Form>
-          <ReposList {...reposListProps} />
-        </Section>
-      </div>
+      <HomeWrapper>
+        <UserListWrapper>
+          <UserList { ...usersListProps } />
+        </UserListWrapper>
+      </HomeWrapper>
     </article>
   );
 }
@@ -115,6 +118,9 @@ const mapStateToProps = createStructuredSelector({
   username: makeSelectUsername(),
   loading: makeSelectLoading(),
   error: makeSelectError(),
+  users: makeSelectUsersArray(),
+  usersLoading: makeSelectUsersLoading(),
+  usersError: makeSelectUsersError(),
 });
 
 export function mapDispatchToProps(dispatch) {
@@ -124,6 +130,7 @@ export function mapDispatchToProps(dispatch) {
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
       dispatch(loadRepos());
     },
+    handleFetchUsers: () => dispatch(getUsers()),
   };
 }
 

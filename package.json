@@ -1,16 +1,16 @@
 {
-  "name": "react-boilerplate",
+  "name": "scalable-react-app",
   "version": "4.0.0",
   "description": "A highly scalable, offline-first foundation with the best DX and a focus on performance and best practices",
   "repository": {
     "type": "git",
-    "url": "git://github.com/react-boilerplate/react-boilerplate.git"
+    "url": "git://github.com/vanglevan/scalable-react-app.git"
   },
   "engines": {
     "npm": ">=5",
     "node": ">=8.15.1"
   },
-  "author": "Max Stoiber",
+  "author": "Vang LE",
   "license": "MIT",
   "scripts": {
     "analyze:clean": "rimraf stats.json",
@@ -64,7 +64,9 @@
     "babel-core": "7.0.0-bridge.0"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.2.1",
     "@babel/polyfill": "7.4.3",
+    "antd": "^4.3.5",
     "chalk": "^2.4.2",
     "compression": "1.7.4",
     "connected-react-router": "6.4.0",
